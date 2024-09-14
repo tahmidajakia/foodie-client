@@ -1,8 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import logo from "/logo.png"; // Ensure the logo path is correct
 import { LuPhoneCall } from "react-icons/lu";
+import { FaRegUser } from "react-icons/fa";
+import Modal from "./Modal";
+import { AuthContext } from "../contexts/AuthProvider";
+import Profile from "./Profile";
 
 const Navbar = () => {
+
+  const {user} = useContext(AuthContext);
+  console.log(user)
+
   const [isSticky, setSticky] = useState(false);
 
   useEffect(() => {
@@ -67,11 +75,13 @@ const Navbar = () => {
       <div
         className={`max-w-screen-2xl container mx-auto fixed top-0 left-0 right-0 transition-all duration-300 ease-in-out`}
       >
-        <div className={`navbar xl:px-24 ${
-          isSticky
-            ? "shadow-md bg-base-100 transition-all duration-300 ease-in-out"
-            : ""
-        }`}>
+        <div
+          className={`navbar xl:px-24 ${
+            isSticky
+              ? "shadow-md bg-base-100 transition-all duration-300 ease-in-out"
+              : ""
+          }`}
+        >
           <div className="navbar-start">
             <div className="dropdown">
               <div
@@ -152,12 +162,14 @@ const Navbar = () => {
               </div>
             </div>
 
-            <a
+            {user ? <Profile user={user}></Profile> : <button
+              onClick={() => document.getElementById("my_modal_5").showModal()}
               href="#"
-              className="btn bg-green rounded-full px-4 text-white flex items-center gap-2"
+              className="btn bg-green rounded-full px-4 text-white flex items-center gap-2 "
             >
-              <LuPhoneCall /> Contact
-            </a>
+              <FaRegUser /> Login
+            </button>}
+            <Modal></Modal>
           </div>
         </div>
       </div>
