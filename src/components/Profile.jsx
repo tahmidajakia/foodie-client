@@ -1,4 +1,17 @@
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthProvider";
+
 const Profile = () => {
+  const { user } = useContext(AuthContext);
+
+  const {logOut} = useContext(AuthContext)
+  const handleLogout = () => {
+    logOut().then(() => {
+      // Sign-out successful.
+    }).catch((error) => {
+      // An error happened.
+    });
+  }
   return (
     <div>
       <div className="drawer drawer-end z-50">
@@ -7,9 +20,18 @@ const Profile = () => {
           {/* Page content here */}
           <label
             htmlFor="my-drawer-4"
-            className="drawer-button btn btn-primary"
+            className="drawer-button btn btn-ghost btn-circle avatar"
           >
-            Open drawer
+            <div className="w-10 rounded-full">
+              {user.photoURL ? (
+                <img alt="Tailwind CSS Navbar component" src={user.photoURL} />
+              ) : (
+                <img
+                  alt="Tailwind CSS Navbar component"
+                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                />
+              )}
+            </div>
           </label>
         </div>
         <div className="drawer-side">
@@ -21,16 +43,16 @@ const Profile = () => {
           <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
             {/* Sidebar content here */}
             <li>
-              <a>Profile</a>
+              <a href="updateProfile">Profile</a>
             </li>
             <li>
               <a>Order</a>
             </li>
             <li>
-              <a>Settings</a>
+              <a>Setting</a>
             </li>
             <li>
-              <a>LogOut</a>
+              <a onClick={handleLogout}>Logout</a>
             </li>
           </ul>
         </div>
