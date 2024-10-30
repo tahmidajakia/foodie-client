@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react'
 import { GoogleAuthProvider, createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import app from "../firebase/firebase.config"
+import axios from 'axios';
 
 
 export const AuthContext = createContext();
@@ -39,25 +40,39 @@ const AuthProvider = ({ children }) => {
       }
 
        // check signed-in user
-    useEffect( () =>{
+       useEffect( () =>{
         const unsubscribe = onAuthStateChanged(auth, currentUser =>{
             // console.log(currentUser);
             setUser(currentUser);
+            if(currentUser){
+                const userInfo ={email: currentUser.email}
+                axios.post('https://demo-foodie-server.vercel.app/jwt', userInfo)
+                  .then( (response) => {
+                    // console.log(response.data.token);
+                    if(response.data.token){
+                        localStorage.setItem("access-token", response.data.token)
+                    }
+                  })
+            } else{
+               localStorage.removeItem("access-token")
+            }
+           
             setLoading(false);
         });
-  
+
         return () =>{
             return unsubscribe();
         }
     }, [])
     const authInfo = {
         user,
+        loading,
         createUser,
         signUpWithGmail,
         login,
         logOut,
         updateUserProfile,
-        loading
+       
     }
   return (
     <AuthContext.Provider value={authInfo}>

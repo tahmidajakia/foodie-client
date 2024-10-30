@@ -4,7 +4,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { FaHeart } from "react-icons/fa";
 import Cards from "../../components/Cards";
-import { FaAngleRight, FaAngleLeft } from "react-icons/fa6";
+import { FaAngleRight, FaAngleLeft } from "react-icons/fa";
 
 const SampleNextArrow = (props) => {
   const { className, style, onClick } = props;
@@ -41,79 +41,82 @@ const SpecialDishes = () => {
       .then((res) => res.json())
       .then((data) => {
         const specials = data.filter((item) => item.category === "popular");
-        // console.log(specials)
         setRecipes(specials);
+        // Trigger a re-render of the slider after the recipes are fetched
+        if (slider.current) {
+          slider.current.slickRefresh();
+        }
       });
   }, []);
+
   const settings = {
     dots: true,
     infinite: false,
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 3,
-    initialSlide: 1,
     responsive: [
       {
-        breakpoint: 1024,
+        breakpoint: 1280,
         settings: {
           slidesToShow: 3,
-          slidesToScroll: 3,
+          slidesToScroll: 2,
           infinite: true,
           dots: true,
         },
       },
       {
-        breakpoint: 970,
+        breakpoint: 1024,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 2,
-          initialSlide: 2,
         },
       },
       {
-        breakpoint: 576,
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 480,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
         },
       },
     ],
-
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
   };
+
   return (
     <div className="max-w-screen-2xl container mx-auto xl:px-24 px-4 my-20 relative">
       <div className="text-left">
         <p className="subtitle">Customer Favorites</p>
-        <h2 className="title">Popular Catagories</h2>
+        <h2 className="title">Popular Categories</h2>
       </div>
-      <div className="md:absolute right-3 top-8 mb-10 md:mr-24">
+      <div className="md:absolute right-3 top-8 mb-10 md:mr-24 flex space-x-2">
         <button
           onClick={() => slider?.current?.slickPrev()}
-          className=" btn p-2 rounded-full ml-5"
+          className="btn p-2 rounded-full"
         >
-          <FaAngleLeft className=" h-8 w-8 p-1" />
+          <FaAngleLeft className="h-8 w-8 p-1" />
         </button>
         <button
-          className="bg-green btn p-2 rounded-full ml-5"
           onClick={() => slider?.current?.slickNext()}
+          className="btn bg-green p-2 rounded-full"
         >
-          <FaAngleRight className=" h-8 w-8 p-1" />
+          <FaAngleRight className="h-8 w-8 p-1" />
         </button>
       </div>
 
-      <div className="">
-        <Slider
-          ref={slider}
-          {...settings}
-          className="overflow-hidden mt-10 space-x-5"
-        >
-          {recipes.map((item, i) => (
-            <Cards item={item} key={i} />
-          ))}
-        </Slider>
-      </div>
+      <Slider ref={slider} {...settings} className="overflow-hidden mt-10">
+        {recipes.map((item, i) => (
+          <Cards item={item} key={i} />
+        ))}
+      </Slider>
     </div>
   );
 };
